@@ -42,7 +42,8 @@ def print_manual():
         "-d, --delay:        Delay between each http request in seconds. Integer value. Two requests are needed per paper. Three if it's a conference paper.\n"
         "-f, --force:        Force writing of TSV levels despite title comparison results.\n"
         "-i, --issn          Use only ISSN for searching TSV levels. Combine with -t if you want to require both issn and title.\n"
-        '-n, --names:        Names for alternative columns. Default values from Zotero are "Title", "Publication Title", "ISSN" and "Conference Name".'
+        "-l, --limiter       Delimiter for reading CSV file. If not specified then default delimiter is ;\n"
+        '-n, --names:        Names for alternative columns. Default values from Zotero are "Title", "Publication Title", "ISSN" and "Conference Name".\n'
         '                    The values are case sensitive and should be given in that order. Use ";" as delimiter.\n'
         '                    Example use: jufo.py -a -n "Paper Titles;Journal Titles;issn;conference abbr"\n'
         "-p, --progress      Show progress bar.\n"
@@ -87,6 +88,7 @@ DEFAULT_ISSN = "ISSN"
 DEFAULT_CONFERENCE = "Conference Name"
 
 NULL_TSV_LEVEL_MARKER = "Null"
+DEFAULT_CSV_LIMITER = ";"
 
 config = None
 
@@ -209,7 +211,10 @@ def request_paper(publication=None, issn=None, conference=None):
  
     return jufo_level
 
-def parse_csv(filename, start=1, limit=None, columns=[DEFAULT_TITLE, DEFAULT_PUBLICATION_TITLE, DEFAULT_ISSN, DEFAULT_CONFERENCE], title_strict=False, issn_strict=False):
+def parse_csv(filename, start=1, limit=None, 
+              columns=[DEFAULT_TITLE, DEFAULT_PUBLICATION_TITLE, DEFAULT_ISSN, DEFAULT_CONFERENCE], 
+              title_strict=False, issn_strict=False, 
+              custom_delimiter=DEFAULT_CSV_LIMITER):
     tempfile = NamedTemporaryFile(mode='w+t', newline='', delete=False)
     if config.isDebugging():
         print("Tempfile path: ", tempfile.name)
@@ -230,7 +235,7 @@ def parse_csv(filename, start=1, limit=None, columns=[DEFAULT_TITLE, DEFAULT_PUB
         else: 
             paper_queue_count = paper_queue_count - (start-1)
 
-        csvreader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
+        csvreader = csv.DictReader(csvfile, delimiter=custom_delimiter, quotechar='"')
         
         limit_counter = 0
         skip_counter = start - 1
@@ -387,9 +392,10 @@ def main(argv):
     ARG_VERBOSE = False
     ARG_ISSN_SEARCH = False
     ARG_TITLE_SEARCH = False
+    ARG_DELIMITER = None
 
     try:
-        opts, args = getopt.getopt(argv,"ac:hid:fn:ps:tv",["automatic", "count=", "delay=", "force", "help", "issn", "names=", "progress", "start=", "title", "verbose"])
+        opts, args = getopt.getopt(argv,"ac:dhil::fn:ps:tv",["automatic", "count=", "delay=", "force", "help", "issn", "limiter=", "names=", "progress", "start=", "title", "verbose"])
     except getopt.GetoptError:
        print("Incorrect flags received!\n\n"
             "Usage: jufo.py <optional flags> SOURCE\n"
@@ -420,7 +426,7 @@ def main(argv):
             ARG_REQDELAY = arg
             try:
                 ARG_REQDELAY = int(ARG_REQDELAY)
-                assert(ARG_REQDELAY >= 0)
+         
             except (ValueError, AssertionError):
                 print("Error: -d flag requires positive or zero integer parameter")
                 sys.exit(2)
@@ -428,6 +434,8 @@ def main(argv):
             ARG_TITLEFORCE = True
         elif opt in ("-i", "--issn"):
             ARG_ISSN_SEARCH = True
+        elif opt in ("-l", "--limiter"):
+            ARG_DELIMITER = arg
         elif opt in ("-n", "--names"):
             ARG_COLUMN_NAMES = arg
             ARG_COLUMN_NAMES = ARG_COLUMN_NAMES.split(";")
@@ -475,6 +483,9 @@ def main(argv):
 
     if ARG_COLUMN_NAMES == None:
         ARG_COLUMN_NAMES = [DEFAULT_TITLE, DEFAULT_PUBLICATION_TITLE, DEFAULT_ISSN, DEFAULT_CONFERENCE]
+
+    if ARG_DELIMITER == None:
+        ARG_DELIMITER = DEFAULT_CSV_LIMITER
     
     print("Source csv path: ", csv_filepath)    
     if ARG_VERBOSE:
@@ -488,11 +499,13 @@ def main(argv):
         print("Starting paper number:  ", ARG_START)
         print("Custom column names:    ", ARG_COLUMN_NAMES)
         print("Progress bar enabled:   ", ARG_PROGRESS)
+        print("CSV delimiter:          ", ARG_DELIMITER)
     
     global config
     config = Config(ARG_VERBOSE, ARG_REQDELAY, ARG_TITLEFORCE)   
 
-    parse_csv(csv_filepath, start=ARG_START, limit=ARG_COUNT, columns=ARG_COLUMN_NAMES, title_strict=ARG_TITLE_SEARCH, issn_strict=ARG_ISSN_SEARCH)
+    parse_csv(csv_filepath, start=ARG_START, limit=ARG_COUNT, columns=ARG_COLUMN_NAMES, 
+              title_strict=ARG_TITLE_SEARCH, issn_strict=ARG_ISSN_SEARCH, custom_delimiter=ARG_DELIMITER)
     
 
 if __name__ == "__main__":
