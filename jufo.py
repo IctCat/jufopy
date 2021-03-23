@@ -44,7 +44,7 @@ def print_manual():
         "-i, --issn          Use only ISSN for searching TSV levels. Combine with -t if you want to require both issn and title.\n"
         '-n, --names:        Names for alternative columns. Default values from Zotero are "Title", "Publication Title", "ISSN" and "Conference Name".'
         '                    The values are case sensitive and should be given in that order. Use ";" as delimiter.\n'
-        '                    Example use: jufo.py -a -n "Paper Titles;Journal Titles;issn"\n'
+        '                    Example use: jufo.py -a -n "Paper Titles;Journal Titles;issn;conference abbr"\n'
         "-p, --progress      Show progress bar.\n"
         "-s, --start:        Starting index of first paper for fetching TSV data. Note that first row of csv data is the header.\n" 
         "-t, --title:        Use only publication title for searching TSV levels. Combine with -i if you want to require both issn and title.\n"
@@ -97,7 +97,7 @@ def request_details(phpsession_id, details_id):
     details_request_url = RESULT_URL_BASE + phpsession_id + RESULT_URL_DETAIL + details_id + RESULT_URL_RANDOM + random_number
     
     if config.isDebugging():
-        print("\nRequesting: ", details_request_url)
+        print("Requesting: ", details_request_url)
     
     time.sleep(config.getDelay())
     details_request = requests.get(details_request_url)
@@ -128,8 +128,12 @@ def request_paper(publication=None, issn=None, conference=None):
                     issn_query_param += character
     if conference:
         last_parentheses_regex = r"\(([^)]*)\)[^(]*$"
-        conference_query_param = re.search(last_parentheses_regex, conference).group(0)
-        conference_query_param = re.sub(r"[()]", "", conference_query_param)
+        conference_abbr_regex = re.search(last_parentheses_regex, conference)
+        if conference_abbr_regex:
+            conference_query_param = conference_abbr_regex.group(0)
+            conference_query_param = re.sub(r"[()]", "", conference_query_param)
+        else:
+            conference = ""
         title_query_param = ""
 
     base_request_url = SEARCH_URL_BASE + title_query_param + SEARCH_URL_CONFERENCE + conference_query_param + SEARCH_URL_ISSN + issn_query_param + SEARCH_URL_END
@@ -166,7 +170,11 @@ def request_paper(publication=None, issn=None, conference=None):
         if(result.contents):
             if conference:
                 span_string = str(result)
-                details_id = re.search(r'(?<=details\()(.*)(?=\);\">)', span_string).group(0)
+                details_regex = re.search(r'(?<=details\()(.*)(?=\);\">)', span_string)
+                if details_regex:
+                    details_id = details_regex.group(0)
+                else:
+                    continue
                 received_conference = request_details(phpsessid, details_id)
                 if (received_conference.lower() != conference_query_param.lower()):
                     continue
