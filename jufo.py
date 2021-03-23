@@ -218,7 +218,7 @@ def parse_csv(filename, start=1, limit=None,
               title_strict=False, issn_strict=False, 
               custom_delimiter=DEFAULT_CSV_LIMITER,
               custom_encoding=DEFAULT_CSV_ENCODING):
-    tempfile = NamedTemporaryFile(mode='w+t', newline='', delete=False)
+    tempfile = NamedTemporaryFile(mode='w+t', newline='', delete=False, encoding=custom_encoding)
     if config.isDebugging():
         print("Tempfile path: ", tempfile.name)
 
