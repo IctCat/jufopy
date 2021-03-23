@@ -125,12 +125,14 @@ Optionally you can use -a flag for automatic .csv file lookup.
         -a, --automatic:    Automatic lookup attempt for .csv file in the current working directory. First match will be used in ascending alphabetical order. Disables SOURCE argument.
         -c  --count:        The amount of papers that TSV data will be fetched for.
         -d, --delay:        Delay between each http request in seconds. Integer value. Two requests are needed per paper. Three if it's a conference paper.
+        -e, --encoding:     Encoding to use for reading the CSV file. Defaults to utf-8.
         -f, --force:        Force writing of TSV levels despite title comparison results.
-        -i, --issn          Use only ISSN for searching TSV levels. Combine with -t if you want to require both issn and title.\n"
+        -i, --issn          Use only ISSN for searching TSV levels. Combine with -t if you want to require both issn and title.
+        -l, --limiter:      Delimiter for reading CSV file. If not specified then default delimiter is ;\n"
         -n, --names:        Names for alternative columns. Default values from Zotero are "Title", "Publication Title", "ISSN" and "Conference Name".
                             The values are case sensitive and should be given in that order. Use ";" as delimiter.
                             Example use: jufo.py -a -n "Paper Titles;Journal Titles;issn"
-        -p, --progress      Show progress bar.
+        -p, --progress:     Show progress bar.
         -s, --start:        Starting index of first paper for fetching TSV data. Note that first row of csv data is the header.
         -t, --title:        Use only publication title for searching TSV levels. Combine with -i if you want to require both issn and title.
                             Therefore, -s 1 would point to the 2nd row of the file as it is the first paper.

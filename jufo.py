@@ -40,13 +40,14 @@ def print_manual():
         "-a, --automatic:    Automatic lookup attempt for .csv file in the current working directory. First match will be used in ascending alphabetical order. Disables SOURCE argument.\n"
         "-c  --count:        The amount of papers that TSV data will be fetched for.\n"
         "-d, --delay:        Delay between each http request in seconds. Integer value. Two requests are needed per paper. Three if it's a conference paper.\n"
+        "-e, --encoding:     Encoding to use for reading the CSV file. Defaults to utf-8.\n"
         "-f, --force:        Force writing of TSV levels despite title comparison results.\n"
         "-i, --issn          Use only ISSN for searching TSV levels. Combine with -t if you want to require both issn and title.\n"
-        "-l, --limiter       Delimiter for reading CSV file. If not specified then default delimiter is ;\n"
+        "-l, --limiter:      Delimiter for reading CSV file. If not specified then default delimiter is ;\n"
         '-n, --names:        Names for alternative columns. Default values from Zotero are "Title", "Publication Title", "ISSN" and "Conference Name".\n'
         '                    The values are case sensitive and should be given in that order. Use ";" as delimiter.\n'
         '                    Example use: jufo.py -a -n "Paper Titles;Journal Titles;issn;conference abbr"\n'
-        "-p, --progress      Show progress bar.\n"
+        "-p, --progress:     Show progress bar.\n"
         "-s, --start:        Starting index of first paper for fetching TSV data. Note that first row of csv data is the header.\n" 
         "-t, --title:        Use only publication title for searching TSV levels. Combine with -i if you want to require both issn and title.\n"
         '                    Therefore, -s 1 would point to the 2nd row of the file as it is the first paper.\n'
