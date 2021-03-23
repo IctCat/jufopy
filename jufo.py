@@ -61,7 +61,6 @@ def print_manual():
 import argparse, csv, getopt, glob, os, sys
 import requests
 import random
-from lxml import html, etree
 from bs4 import BeautifulSoup
 from tempfile import NamedTemporaryFile
 import shutil
@@ -69,7 +68,6 @@ import re
 import time
 import urllib
 from progress.bar import IncrementalBar
-
 
 DEFAULT_REQUEST_DELAY = 5 # Seconds
 
