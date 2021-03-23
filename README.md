@@ -18,6 +18,7 @@ The html parser can be [exploited](https://docs.python.org/3/library/xml.html#xm
 *TSV level is synonym for JUFO level* 
 A null TSV means a paper which is found but doesn't have a set TSV level.
 A None TSV means a paper whish is not found.
+Values in `Conference Name` column should contain the conference abbreviation inside parentheses.
 
 
 # Python virtual environment creation
