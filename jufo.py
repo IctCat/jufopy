@@ -89,6 +89,7 @@ DEFAULT_CONFERENCE = "Conference Name"
 
 NULL_TSV_LEVEL_MARKER = "Null"
 DEFAULT_CSV_LIMITER = ";"
+DEFAULT_CSV_ENCODING = "utf-8"
 
 config = None
 
@@ -214,7 +215,8 @@ def request_paper(publication=None, issn=None, conference=None):
 def parse_csv(filename, start=1, limit=None, 
               columns=[DEFAULT_TITLE, DEFAULT_PUBLICATION_TITLE, DEFAULT_ISSN, DEFAULT_CONFERENCE], 
               title_strict=False, issn_strict=False, 
-              custom_delimiter=DEFAULT_CSV_LIMITER):
+              custom_delimiter=DEFAULT_CSV_LIMITER,
+              custom_encoding=DEFAULT_CSV_ENCODING):
     tempfile = NamedTemporaryFile(mode='w+t', newline='', delete=False)
     if config.isDebugging():
         print("Tempfile path: ", tempfile.name)
@@ -225,7 +227,7 @@ def parse_csv(filename, start=1, limit=None,
     good_papers_list = []
     skipped_papers_count = 0
  
-    with open(filename, 'r', newline='') as csvfile, tempfile:
+    with open(filename, 'r', newline='', encoding=custom_encoding) as csvfile, tempfile:
         total_rows = sum(1 for row in csvfile)
         csvfile.seek(0)
   
@@ -393,9 +395,10 @@ def main(argv):
     ARG_ISSN_SEARCH = False
     ARG_TITLE_SEARCH = False
     ARG_DELIMITER = None
+    ARG_ENCODING = None
 
     try:
-        opts, args = getopt.getopt(argv,"ac:dhil::fn:ps:tv",["automatic", "count=", "delay=", "force", "help", "issn", "limiter=", "names=", "progress", "start=", "title", "verbose"])
+        opts, args = getopt.getopt(argv,"ac:de:hil::fn:ps:tv",["automatic", "count=", "delay=", "encoding=", "force", "help", "issn", "limiter=", "names=", "progress", "start=", "title", "verbose"])
     except getopt.GetoptError:
        print("Incorrect flags received!\n\n"
             "Usage: jufo.py <optional flags> SOURCE\n"
@@ -430,6 +433,8 @@ def main(argv):
             except (ValueError, AssertionError):
                 print("Error: -d flag requires positive or zero integer parameter")
                 sys.exit(2)
+        elif opt in ("-e", "--encoding"):
+            ARG_ENCODING = arg
         elif opt in ("-f", "--force"):
             ARG_TITLEFORCE = True
         elif opt in ("-i", "--issn"):
@@ -486,6 +491,9 @@ def main(argv):
 
     if ARG_DELIMITER == None:
         ARG_DELIMITER = DEFAULT_CSV_LIMITER
+
+    if ARG_ENCODING == None:
+        ARG_ENCODING = DEFAULT_CSV_ENCODING
     
     print("Source csv path: ", csv_filepath)    
     if ARG_VERBOSE:
@@ -500,12 +508,13 @@ def main(argv):
         print("Custom column names:    ", ARG_COLUMN_NAMES)
         print("Progress bar enabled:   ", ARG_PROGRESS)
         print("CSV delimiter:          ", ARG_DELIMITER)
+        print("CSV encoding:           ", ARG_ENCODING)
     
     global config
     config = Config(ARG_VERBOSE, ARG_REQDELAY, ARG_TITLEFORCE)   
 
-    parse_csv(csv_filepath, start=ARG_START, limit=ARG_COUNT, columns=ARG_COLUMN_NAMES, 
-              title_strict=ARG_TITLE_SEARCH, issn_strict=ARG_ISSN_SEARCH, custom_delimiter=ARG_DELIMITER)
+    parse_csv(csv_filepath, start=ARG_START, limit=ARG_COUNT, columns=ARG_COLUMN_NAMES, title_strict=ARG_TITLE_SEARCH, 
+              issn_strict=ARG_ISSN_SEARCH, custom_delimiter=ARG_DELIMITER, custom_encoding=ARG_ENCODING)
     
 
 if __name__ == "__main__":
