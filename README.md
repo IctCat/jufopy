@@ -80,7 +80,6 @@ You can recognize an active Python environment by the virtual environment name w
 ## Installation 
 ```bash
 pip install beautifulsoup4 && \
-pip install lxml && \ 
 pip install requests
 ```
 
