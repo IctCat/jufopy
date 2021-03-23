@@ -96,9 +96,19 @@ with shebang:
 ```
 
 
-Search for papers
+Basic search for papers. Shows progress bar, ignores publication title comparison and automatrically finds the .csv file.
 ```bash
-./jufo.py -a
+./jufo.py -p -f -a
+```
+
+Advanced search. Starts from the 10th paper and processes only 5 papers using a http request delay of 7 seconds. Also shows debug information and requires both ISSN and publication title from those papers.
+```bash
+./jufo.py -v -p -s 10 -c 5 -d 7 -i -t /home/myuser/example.csv
+```
+
+Search for papers with custom column names and automatrically find the .csv file.
+```bash
+./jufo.py -a -n "Paper Titles;Journal Titles;issn;conference abbr"
 ```
 
 By default the script uses ISSN or publication title for searching. If both are found then they are used together.
