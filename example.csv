@@ -1,0 +1,2 @@
+Source.Name;Key;Item Type;Publication Year;Author;Title;Publication Title;ISBN;ISSN;DOI;Url;Abstract Note;Date;Date Added;Date Modified;Access Date;Pages;Issue;Volume;Journal Abbreviation;Short Title;Series;Series Number;Publisher;Place;Language;Library Catalog;Extra;File Attachments;Editor;Conference Name
+my source;abc1234;journalArticle;2016;"Author1; Author2";Test Paper Title;Publisher;;1234-5678;;;Lorem ipsum;2016;;;;100-200;2;18;Asd;;;;;;en;DOI.org (Crossref);;;;
