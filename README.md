@@ -1,5 +1,6 @@
 # JuFo.py
-Julkaisu Foorumi Python (jufo.py) script for automated academic publication ranking search
+Julkaisu Foorumi Python (jufo.py) script for automated academic publication ranking search.
+Works on both Linux and Windows with Python3.
 
 # About
 `jufo.py` Python script was created to aid with the process of doing academic research.
@@ -72,8 +73,6 @@ Example:
 
 That should do it! Now you can install packages with pip into your virtual Python environment.
 You can recognize an active Python environment by the virtual environment name wrapped inside parentheses on the left side of your terminal.
-
-#### This script is not yet tested on Windows environments. Consider contributing if you are running this script on Windows.
 
 
 # Using Jufo.py
