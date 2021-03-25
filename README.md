@@ -48,7 +48,7 @@ python3 -m venv <file path>
 ```bash
 source <venv>/bin/activate
 ```
-Replace <venv> with the file path created above. (<file path>).
+Replace <venv> with the <file path> created above.
 
 #### Source
 https://docs.python.org/3/library/venv.html
@@ -78,9 +78,7 @@ You can recognize an active Python environment by the virtual environment name w
 # Using Jufo.py
 ## Installation 
 ```bash
-pip install beautifulsoup4 && \
-pip install requests && \
-pip install progress
+pip install -r requirements.txt
 ```
 
 ## Running examples
